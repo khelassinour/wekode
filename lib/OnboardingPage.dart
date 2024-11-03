@@ -14,7 +14,7 @@ class ContentModel {
 List<ContentModel> contents = [
   ContentModel(
     image:
-        'assets/onBoardingImage01.png', // Update to a standard image format like .png
+        'assets/onBoardingImage01.png',
     title: "What's TPMCI?",
     description:
         "TCPMI is an app that connects travelers with shoppers to deliver internationally. It allows travelers to make money by delivering items, while shoppers can get items from abroad without high shipping costs.",

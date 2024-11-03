@@ -151,7 +151,7 @@ class _NewProductPageState extends State<NewProductPage> {
                 _buildImageUploadField(),
                 const SizedBox(height: 16),
 
-                // Changed the label for product's category to Text widget above the dropdown
+
                 const Text("Product's category", style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.grey )),
                 const SizedBox(height: 4),
                 _buildCategoryDropdown(),
@@ -188,7 +188,7 @@ class _NewProductPageState extends State<NewProductPage> {
             filled: true,
             fillColor: Colors.grey[200],
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
-            contentPadding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12), // Decreased height
+            contentPadding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
           ),
         ),
       ],
@@ -310,8 +310,8 @@ class _NewProductPageState extends State<NewProductPage> {
     return Padding(
       padding: const EdgeInsets.all(9.0),
       child: Wrap(
-        spacing: 8.0, // Horizontal spacing between chips
-        runSpacing: 8.0, // Vertical spacing between rows
+        spacing: 8.0,
+        runSpacing: 8.0,
         children: List<Widget>.generate(_classes.length, (index) {
           return GestureDetector(
             onTap: () {

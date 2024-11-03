@@ -14,7 +14,7 @@ class Successverification extends StatelessWidget {
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
         child: Center(
-          // Center the content vertically
+
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

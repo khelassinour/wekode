@@ -169,8 +169,8 @@ class _ProfilePageState extends State<ProfilePage> {
         ),
         SizedBox(height: 10),
         TextField(
-          controller: TextEditingController(text: value), // Set the initial text
-          enabled: false, // Make it read-only
+          controller: TextEditingController(text: value),
+          enabled: false,
           decoration: InputDecoration(
             hintText: '',
             hintStyle: TextStyle(color: Colors.grey, fontSize: 15),
@@ -182,7 +182,7 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
             contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
           ),
-          style: TextStyle(color: Colors.black), // Set text color to black
+          style: TextStyle(color: Colors.black),
         ),
         SizedBox(height: MediaQuery.of(context).size.width * 0.05),
       ],

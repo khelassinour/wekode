@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'passwordchanged.dart'; // Import the NewPasswordPage
+import 'passwordchanged.dart';
 
 class OTPVerificationPage extends StatefulWidget {
   @override
@@ -27,7 +27,7 @@ class _OTPVerificationPageState extends State<OTPVerificationPage> {
       if (index < _focusNodes.length - 1) {
         FocusScope.of(context).requestFocus(_focusNodes[index + 1]);
       } else {
-        _focusNodes[index].unfocus(); // Close keyboard on the last field
+        _focusNodes[index].unfocus();
       }
     }
   }
@@ -35,8 +35,7 @@ class _OTPVerificationPageState extends State<OTPVerificationPage> {
   void _verifyOTP() {
     String otpCode = _controllers.map((c) => c.text).join();
     print("Entered OTP: $otpCode");
-    // Here you can add your OTP verification logic
-    // If OTP is correct, navigate to the NewPasswordPage
+
 
     Navigator.push(
       context,
@@ -133,7 +132,7 @@ class _OTPVerificationPageState extends State<OTPVerificationPage> {
             Spacer(),
             TextButton(
               onPressed: () {
-                // Add code to re-send OTP here
+
               },
               child: Text.rich(
                 TextSpan(

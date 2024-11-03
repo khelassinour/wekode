@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobiledev/Paasword/SuccessPage.dart';
 import 'package:mobiledev/Profil/successphone_verification.dart';
-import '../Paasword/passwordchanged.dart'; // Import the NewPasswordPage
+import '../Paasword/passwordchanged.dart';
 
 class OTPVerificationphone extends StatefulWidget {
   @override
@@ -29,7 +29,7 @@ class _OTPVerificationphoneState extends State<OTPVerificationphone> {
       if (index < _focusNodes.length - 1) {
         FocusScope.of(context).requestFocus(_focusNodes[index + 1]);
       } else {
-        _focusNodes[index].unfocus(); // Close keyboard on the last field
+        _focusNodes[index].unfocus();
       }
     }
   }
@@ -37,8 +37,7 @@ class _OTPVerificationphoneState extends State<OTPVerificationphone> {
   void _verifyOTP() {
     String otpCode = _controllers.map((c) => c.text).join();
     print("Entered OTP: $otpCode");
-    // Here you can add your OTP verification logic
-    // If OTP is correct, navigate to the NewPasswordPage
+
 
     Navigator.push(
       context,

@@ -35,7 +35,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         home: TOKEN == ''
             ? LandingPage()
-            : HomePage(), // Set LandingPage as the initial screen
+            : HomePage(),
       ),
     );
   }

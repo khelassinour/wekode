@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'newproduct_page.dart';
-import 'package:intl/intl.dart'; // Import for date formatting
+import 'package:intl/intl.dart';
 import 'package:mobiledev/Profil/profil_page.dart';
 void main() {
   runApp(MyApp());
@@ -12,8 +12,6 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       home: HomePage(),
       theme: ThemeData(
-
-
       ),
     );
   }
@@ -63,8 +61,8 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
         child: BottomNavigationBar(
-          backgroundColor: Colors.transparent, // Set to transparent for the Container's color to show
-          elevation: 0, // Remove elevation for a flat look, adjust if needed
+          backgroundColor: Colors.transparent,
+          elevation: 0,
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
               icon: ImageIcon(AssetImage('assets/home_icon.ico'), size: 24, color: Colors.grey),
@@ -79,11 +77,11 @@ class _HomePageState extends State<HomePage> {
               label: 'Trips',
             ),
             BottomNavigationBarItem(
-              icon: ImageIcon(AssetImage('assets/inbox.png'), size: 24, color: Colors.grey),
+              icon: ImageIcon(AssetImage('assets/inboxico.ico'), size: 24, color: Colors.grey),
               label: 'Inbox',
             ),
             BottomNavigationBarItem(
-              icon: ImageIcon(AssetImage('assets/person_icon .ico'), size: 24, color: Colors.grey),
+              icon: ImageIcon(AssetImage('assets/person_icon.ico'), size: 24, color: Colors.grey),
               label: 'Profile',
             ),
           ],
@@ -239,7 +237,7 @@ class _OrderPageState extends State<OrderPage> {
     return Row(
       children: [
         Icon(icon, color: Colors.grey),
-        SizedBox(width: MediaQuery.of(context).size.width * 0.02), // Responsive width
+        SizedBox(width: MediaQuery.of(context).size.width * 0.02),
         Expanded(
           child: TextField(
             controller: controller,
@@ -260,7 +258,7 @@ class _OrderPageState extends State<OrderPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(label,  style: TextStyle(color: Colors.grey)),
-        SizedBox(height: MediaQuery.of(context).size.height * 0.01), // Responsive height
+        SizedBox(height: MediaQuery.of(context).size.height * 0.01),
         GestureDetector(
           onTap: () async {
             DateTime? selectedDate = await showDatePicker(
@@ -272,12 +270,12 @@ class _OrderPageState extends State<OrderPage> {
 
             if (selectedDate != null) {
               setState(() {
-                _dateController.text = DateFormat('yyyy-MM-dd').format(selectedDate); // Set the selected date
+                _dateController.text = DateFormat('yyyy-MM-dd').format(selectedDate);
               });
             }
           },
           child: Container(
-            padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.03), // Responsive padding
+            padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.03),
             decoration: BoxDecoration(
               color: Colors.grey[200],
               borderRadius: BorderRadius.circular(8),
@@ -285,10 +283,10 @@ class _OrderPageState extends State<OrderPage> {
             child: Row(
               children: [
                 Icon(Icons.calendar_today, color: Colors.grey),
-                SizedBox(width: MediaQuery.of(context).size.width * 0.02), // Responsive width
+                SizedBox(width: MediaQuery.of(context).size.width * 0.02),
                 Expanded(
                   child: Text(
-                    _dateController.text.isNotEmpty ? _dateController.text : 'Pick a date', // Show the selected date or placeholder
+                    _dateController.text.isNotEmpty ? _dateController.text : 'Pick a date',
                     style: TextStyle(color: _dateController.text.isNotEmpty ? Colors.black : Colors.grey),
                   ),
                 ),
@@ -325,9 +323,9 @@ class _OrderPageState extends State<OrderPage> {
             fontSize: MediaQuery.of(context).size.width * 0.038,
           ),
         ),
-        SizedBox(height: MediaQuery.of(context).size.height * 0.02), // Responsive height
+        SizedBox(height: MediaQuery.of(context).size.height * 0.02),
         Container(
-          padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.03), // Responsive padding
+          padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.03),
           decoration: BoxDecoration(
             color: Colors.grey[200],
             borderRadius: BorderRadius.circular(8),
@@ -350,21 +348,21 @@ class _OrderPageState extends State<OrderPage> {
                   .toList(),
               onChanged: (value) {
                 setState(() {
-                  _selectedProduct = value; // Update selected product
+                  _selectedProduct = value;
                 });
               },
               underline: SizedBox(),
             ),
           ),
         ),
-        SizedBox(height: MediaQuery.of(context).size.height * 0.02), // Responsive height
+        SizedBox(height: MediaQuery.of(context).size.height * 0.02),
         Row(
           children: [
             Expanded(
               child: Divider(
-                color: Colors.grey[300], // Color of the divider
-                thickness: 1,       // Thickness of the divider
-                endIndent: 10,      // Spacing between the divider and the "OR" text
+                color: Colors.grey[300],
+                thickness: 1,
+                endIndent: 10,
               ),
             ),
             Center(
@@ -377,13 +375,13 @@ class _OrderPageState extends State<OrderPage> {
               child: Divider(
                 color: Colors.grey[300],
                 thickness: 1,
-                indent: 10,         // Spacing between the divider and the "OR" text
+                indent: 10,
               ),
             ),
           ],
         ),
 
-        SizedBox(height: MediaQuery.of(context).size.height * 0.01), // Responsive height
+        SizedBox(height: MediaQuery.of(context).size.height * 0.01),
         ElevatedButton(
           onPressed: () {
             Navigator.push(
@@ -400,12 +398,12 @@ class _OrderPageState extends State<OrderPage> {
             elevation: 0,
             side: BorderSide(color: Colors.grey, width: 1),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8), // Border radius
+              borderRadius: BorderRadius.circular(8),
             ),
           ),
         ),
 
-        SizedBox(height: MediaQuery.of(context).size.height * 0.02), // Responsive height
+        SizedBox(height: MediaQuery.of(context).size.height * 0.02),
         Text('Have a note for the shipper?',
           style: TextStyle(
             color: Colors.grey,
@@ -424,7 +422,7 @@ class _OrderPageState extends State<OrderPage> {
               borderRadius: BorderRadius.circular(8),
               borderSide: BorderSide.none,
             ),
-            contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0), // Adjust height here
+            contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
           ),
           maxLines: 4,
           minLines: 1,

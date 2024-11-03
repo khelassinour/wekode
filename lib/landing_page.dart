@@ -4,7 +4,7 @@ import 'OnboardingPage.dart';
 class LandingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // Screen width and height
+
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
@@ -16,7 +16,7 @@ class LandingPage extends StatelessWidget {
             decoration: const BoxDecoration(
               image: DecorationImage(
                 image: AssetImage(
-                    'assets/plane.jpg'), // Add your background image here
+                    'assets/plane.jpg'),
                 fit: BoxFit.cover,
               ),
             ),
@@ -30,10 +30,10 @@ class LandingPage extends StatelessWidget {
                 Image.asset(
                   'assets/logo.png',
                   width:
-                      screenWidth * 0.9, // Adjusts width based on screen size
+                      screenWidth * 0.9,
                 ),
                 SizedBox(
-                    height: screenHeight * 0.15), // Responsive vertical spacing
+                    height: screenHeight * 0.15),
                 // Text content
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.08),
@@ -44,7 +44,7 @@ class LandingPage extends StatelessWidget {
                         'Worldwide delivery\nHassle free!',
                         textAlign: TextAlign.start,
                         style: TextStyle(
-                          fontSize: screenWidth * 0.07, // Responsive font size
+                          fontSize: screenWidth * 0.07,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                         ),
@@ -54,7 +54,7 @@ class LandingPage extends StatelessWidget {
                         'Experience seamless global shopping\nwith effortless delivery to your doorstep.',
                         textAlign: TextAlign.start,
                         style: TextStyle(
-                          fontSize: screenWidth * 0.04, // Responsive font size
+                          fontSize: screenWidth * 0.04,
                           color: Colors.white.withOpacity(0.8),
                         ),
                       ),
@@ -62,7 +62,7 @@ class LandingPage extends StatelessWidget {
                   ),
                 ),
                 SizedBox(
-                    height: screenHeight * 0.05), // Responsive vertical spacing
+                    height: screenHeight * 0.05),
                 // Get Started button
                 ElevatedButton(
                   onPressed: () {
@@ -73,7 +73,7 @@ class LandingPage extends StatelessWidget {
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor:
-                        const Color(0xFF6D57FC), // Updated to #6D57FC
+                        const Color(0xFF6D57FC),
                     padding: EdgeInsets.symmetric(
                       horizontal: screenWidth * 0.25,
                       vertical: screenHeight * 0.02,

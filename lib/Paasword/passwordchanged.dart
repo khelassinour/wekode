@@ -7,7 +7,7 @@ class NewPasswordPage extends StatefulWidget {
 }
 
 class _NewPasswordPageState extends State<NewPasswordPage> {
-  // State variables
+
   bool _showPassword = false;
   bool _showConfirmPassword = false;
   final TextEditingController _passwordController = TextEditingController();
@@ -17,7 +17,7 @@ class _NewPasswordPageState extends State<NewPasswordPage> {
   bool _isLengthValid = false;
   bool _hasUpperCaseAndNumber = false;
 
-  // Validate password based on criteria
+
   void _validatePassword(String password) {
     setState(() {
       _isLengthValid = password.length >= 8 && password.length <= 16;
@@ -28,7 +28,7 @@ class _NewPasswordPageState extends State<NewPasswordPage> {
 
   @override
   Widget build(BuildContext context) {
-    // Get screen dimensions
+
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
 

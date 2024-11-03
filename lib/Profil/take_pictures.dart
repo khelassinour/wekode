@@ -467,7 +467,7 @@ class ReviewPage extends StatelessWidget {
               children: [
                 Icon(
                   Icons.access_time,
-                  size: screenWidth * 0.3, // Responsive icon size
+                  size: screenWidth * 0.3,
                   color: Colors.black,
                 ),
               ],
@@ -476,7 +476,7 @@ class ReviewPage extends StatelessWidget {
             Text(
               "Thanks, we’re reviewing your submitted infos",
               style: TextStyle(
-                fontSize: screenWidth * 0.06, // Responsive font size
+                fontSize: screenWidth * 0.06,
                 fontWeight: FontWeight.bold,
                 color: Colors.black,
               ),
@@ -513,7 +513,7 @@ class ReviewPage extends StatelessWidget {
                 child: Text(
                   "Got it",
                   style: TextStyle(
-                    fontSize: screenWidth * 0.045, // Responsive font size
+                    fontSize: screenWidth * 0.045,
                     color: Colors.white,
                   ),
                 ),

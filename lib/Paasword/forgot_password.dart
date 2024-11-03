@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'OTPVerificationPage.dart'; // Import the OTP Verification page
+import 'OTPVerificationPage.dart';
 
 class PasswordPage extends StatefulWidget {
   @override
@@ -62,7 +62,7 @@ class _PasswordPageState extends State<PasswordPage> {
               onPressed: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(builder: (context) => OTPVerificationPage()),
-                ); // Navigate to OTP Verification Page
+                );
               },
               child: Text(
                 "Send a code",
@@ -88,7 +88,7 @@ class _PasswordPageState extends State<PasswordPage> {
                   ),
                   TextButton(
                     onPressed: () {
-                      Navigator.of(context).pushNamed('/login'); // Adjust the route as necessary
+                      Navigator.of(context).pushNamed('/login');
                     },
                     child: Text(
                       "Log in",

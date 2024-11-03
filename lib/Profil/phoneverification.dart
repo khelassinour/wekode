@@ -63,7 +63,7 @@ class _phoneverificationState extends State<phoneverification> {
               onPressed: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(builder: (context) => OTPVerificationphone()),
-                ); // Navigate to OTP Verification Page
+                );
               },
               child: Text(
                 "Send a code",

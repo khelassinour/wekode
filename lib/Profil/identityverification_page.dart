@@ -208,7 +208,7 @@ class VerificationScreen extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  SizedBox(width: screenWidth * 0.01), // Placeholder to balance the "X" button
+                  SizedBox(width: screenWidth * 0.01),
                   Text(
                     "Prepare for the picture",
                     style: TextStyle(

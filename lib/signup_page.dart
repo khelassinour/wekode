@@ -62,7 +62,6 @@ class _SignupPageState extends State<SignupPage> {
               ),
               SizedBox(height: screenHeight * 0.02),
 
-              // First and Last Name Fields with Labels
               Row(
                 children: [
                   Expanded(
@@ -96,7 +95,7 @@ class _SignupPageState extends State<SignupPage> {
               ),
               SizedBox(height: screenHeight * 0.02),
 
-              // Email Field with Label
+
               buildTextField(
                 label: "Email",
                 hint: "Example@gmail.com",
@@ -106,18 +105,18 @@ class _SignupPageState extends State<SignupPage> {
                   if (value == null || value.isEmpty) {
                     return 'Please enter some text';
                   }
-                  // Regular expression for email validation
+
                   final emailRegex =
                       RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
                   if (!emailRegex.hasMatch(value)) {
                     return 'Please enter a valid email';
                   }
-                  return null; // No error if the email is valid
+                  return null;
                 },
               ),
               SizedBox(height: screenHeight * 0.02),
 
-              // Password Field with Label
+
               buildPasswordField(
                 label: "Password",
                 hint: "Enter a password",
@@ -128,12 +127,12 @@ class _SignupPageState extends State<SignupPage> {
                     return 'Please enter a password';
                   }
 
-                  return null; // No error if the password is valid
+                  return null;
                 },
               ),
               SizedBox(height: screenHeight * 0.05),
 
-              // Terms of Service and Privacy Policy
+
               buildTermsAndPrivacy(),
               SizedBox(height: screenHeight * 0.05),
 
@@ -238,7 +237,7 @@ class _SignupPageState extends State<SignupPage> {
     required String hint,
     required double width,
     required TextEditingController controller,
-    required String? Function(String?)? validator, // Add validator parameter
+    required String? Function(String?)? validator,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -260,7 +259,7 @@ class _SignupPageState extends State<SignupPage> {
               borderSide: BorderSide.none,
             ),
           ),
-          validator: validator, // Set validator
+          validator: validator,
         ),
       ],
     );
@@ -271,7 +270,7 @@ class _SignupPageState extends State<SignupPage> {
     required String hint,
     required double width,
     required TextEditingController controller,
-    required String? Function(String?)? validator, // Add validator parameter
+    required String? Function(String?)? validator,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -296,7 +295,7 @@ class _SignupPageState extends State<SignupPage> {
                   borderSide: BorderSide.none,
                 ),
               ),
-              validator: validator, // Set validator
+              validator: validator,
             ),
             TextButton(
               onPressed: () {

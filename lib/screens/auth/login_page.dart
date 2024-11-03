@@ -48,230 +48,233 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
       backgroundColor: Colors.white,
-      body: Form(
-        key: _formKey,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            SingleChildScrollView(
-              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(height: screenHeight * 0.05),
-                  // Adding the hand emoji next to "Hello"
-                  Text.rich(
-                    TextSpan(
+      body: SingleChildScrollView(
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              SingleChildScrollView(
+                padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(height: screenHeight * 0.05),
+
+                    Text.rich(
+                      TextSpan(
+                        children: [
+                          TextSpan(
+                            text: "Hello ",
+                            style: TextStyle(
+                              fontSize: screenWidth * 0.07,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          WidgetSpan(
+                            child: Icon(
+                              Icons.waving_hand,
+                              size: screenWidth * 0.07,
+                              color: Colors.amber,
+                            ),
+                          ),
+                          TextSpan(
+                            text: "\nHappy to see you again!",
+                            style: TextStyle(
+                              fontSize: screenWidth * 0.07,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: screenHeight * 0.05),
+        
+
+                    buildTextField(
+                      label: "Email",
+                      hint: "Example@gmail.com",
+                      width: screenWidth,
+                      controller: _emailController,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter some text';
+                        }
+
+                        final emailRegex =
+                            RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+                        if (!emailRegex.hasMatch(value)) {
+                          return 'Please enter a valid email';
+                        }
+                        return null;
+                      },
+                    ),
+                    SizedBox(height: screenHeight * 0.02),
+        
+                    // Password Field with Label
+                    buildPasswordField(
+                      label: "Password",
+                      hint: "Enter a password",
+                      width: screenWidth,
+                      controller: _passwordController,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter some text';
+                        }
+                        return null;
+                      },
+                    ),
+                    SizedBox(height: screenHeight * 0.01),
+        
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        TextSpan(
-                          text: "Hello ",
-                          style: TextStyle(
-                            fontSize: screenWidth * 0.07,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        WidgetSpan(
-                          child: Icon(
-                            Icons.waving_hand,
-                            size: screenWidth * 0.07,
-                            color: Colors.amber,
-                          ),
-                        ),
-                        TextSpan(
-                          text: "\nHappy to see you again!",
-                          style: TextStyle(
-                            fontSize: screenWidth * 0.07,
-                            fontWeight: FontWeight.bold,
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                  builder: (context) => PasswordPage()),
+                            );
+                          },
+                          child: Text(
+                            "Forgot password?",
+                            style: TextStyle(
+                              color: Colors.grey,
+                              fontSize: screenWidth * 0.035,
+                            ),
                           ),
                         ),
                       ],
                     ),
-                  ),
-                  SizedBox(height: screenHeight * 0.05),
-
-                  // Email Field with Label
-                  buildTextField(
-                    label: "Email",
-                    hint: "Example@gmail.com",
-                    width: screenWidth,
-                    controller: _emailController,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter some text';
-                      }
-                      // Regular expression for email validation
-                      final emailRegex =
-                          RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-                      if (!emailRegex.hasMatch(value)) {
-                        return 'Please enter a valid email';
-                      }
-                      return null; // No error if the email is valid
-                    },
-                  ),
-                  SizedBox(height: screenHeight * 0.02),
-
-                  // Password Field with Label
-                  buildPasswordField(
-                    label: "Password",
-                    hint: "Enter a password",
-                    width: screenWidth,
-                    controller: _passwordController,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter some text';
-                      }
-                      return null;
-                    },
-                  ),
-                  SizedBox(height: screenHeight * 0.01),
-
-                  // Aligning "Forgot password?" to the right and navigating to PasswordPage
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      TextButton(
-                        onPressed: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                                builder: (context) => PasswordPage()),
+                    SizedBox(height: screenHeight * 0.05),
+        
+                    // Login button
+        
+                    BlocConsumer<AuthCubit, AuthState>(
+                      listener: (context, state) async {
+                        if (state is LoginStateGood) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("Login Successful"),
+                              backgroundColor: Colors.green,
+                            ),
                           );
-                        },
-                        child: Text(
-                          "Forgot password?",
-                          style: TextStyle(
-                            color: Colors.grey,
-                            fontSize: screenWidth * 0.035,
+                          await CachHelper.putcache(
+                              key: tokenCache,
+                              value: state.model.data!.accessToken);
+                          Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>  HomePage()),
+                              (route) => false);
+                        } else if (state is LoginStateBad) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("Login Failed"),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                        } else if (state is ErrorState) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                  state.errorModel.error?.description ?? "Error"),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                        }
+                      },
+                      builder: (context, state) {
+                        if (state is LoginLoadingState) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                        return ElevatedButton(
+                          onPressed: () {
+                            if (_formKey.currentState!.validate()) {
+                              Map<String, dynamic> data = {
+                                "email": _emailController.text,
+                                "password": _passwordController.text,
+                                "device_name": "mobile"
+                              };
+                              AuthCubit.get(context)
+                                  .login(data: data, path: LOGINUSER);
+        
+                              // Navigator.push(
+                              //   context,
+                              //   MaterialPageRoute(builder: (context) => HomePage()),
+                              // );
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF6D57FC),
+                            minimumSize:
+                                Size(double.infinity, screenHeight * 0.065),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
                           ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: screenHeight * 0.05),
-
-                  // Login button
-
-                  BlocConsumer<AuthCubit, AuthState>(
-                    listener: (context, state) async {
-                      if (state is LoginStateGood) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text("Login Successful"),
-                            backgroundColor: Colors.green,
+                          child: Text(
+                            "Log in",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: screenWidth * 0.045,
+                            ),
                           ),
                         );
-                        await CachHelper.putcache(
-                            key: tokenCache,
-                            value: state.model.data!.accessToken);
-                        Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>  HomePage()),
-                            (route) => false);
-                      } else if (state is LoginStateBad) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text("Login Failed"),
-                            backgroundColor: Colors.red,
-                          ),
-                        );
-                      } else if (state is ErrorState) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                                state.errorModel.error?.description ?? "Error"),
-                            backgroundColor: Colors.red,
-                          ),
-                        );
-                      }
-                    },
-                    builder: (context, state) {
-                      if (state is LoginLoadingState) {
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      }
-                      return ElevatedButton(
-                        onPressed: () {
-                          if (_formKey.currentState!.validate()) {
-                            Map<String, dynamic> data = {
-                              "email": _emailController.text,
-                              "password": _passwordController.text,
-                              "device_name": "mobile"
-                            };
-                            AuthCubit.get(context)
-                                .login(data: data, path: LOGINUSER);
-
-                            // Navigator.push(
-                            //   context,
-                            //   MaterialPageRoute(builder: (context) => HomePage()),
-                            // );
-                          }
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF6D57FC),
-                          minimumSize:
-                              Size(double.infinity, screenHeight * 0.065),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                        ),
-                        child: Text(
-                          "Log in",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: screenWidth * 0.045,
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-
-                  SizedBox(height: screenHeight * 0.03),
-
-                  // Divider with "Or log in with" text
-                  buildDividerWithText("Or log in with"),
-                  SizedBox(height: screenHeight * 0.02),
-
-                  // Social login buttons (Responsive)
-                  buildSocialMediaIcons(),
-                  SizedBox(height: screenHeight * 0.02),
-                ],
-              ),
-            ),
-
-            // "New to TPCMI? Sign up now" text with "Sign up now" as a button
-            Padding(
-              padding: const EdgeInsets.only(bottom: 30),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "New to TPCMI?",
-                    style: TextStyle(
-                      color: Colors.grey,
-                      fontSize: screenWidth * 0.035,
+                      },
                     ),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                            builder: (context) => const SignupPage()),
-                      );
-                    },
-                    child: Text(
-                      "Sign up now",
+        
+                    SizedBox(height: screenHeight * 0.03),
+        
+
+                    buildDividerWithText("Or log in with"),
+                    SizedBox(height: screenHeight * 0.02),
+        
+
+                    buildSocialMediaIcons(),
+                    SizedBox(height: screenHeight * 0.02),
+                  ],
+                ),
+              ),
+        
+
+              Padding(
+                padding: const EdgeInsets.only(bottom: 30),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "New to TPCMI?",
                       style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
+                        color: Colors.grey,
                         fontSize: screenWidth * 0.035,
                       ),
                     ),
-                  ),
-                ],
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                              builder: (context) => const SignupPage()),
+
+                        );
+                      },
+                      child: Text(
+                        "Sign up now",
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontSize: screenWidth * 0.035,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -282,7 +285,7 @@ class _LoginPageState extends State<LoginPage> {
     required String hint,
     required double width,
     required TextEditingController controller,
-    required String? Function(String?)? validator, // Add validator parameter
+    required String? Function(String?)? validator,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -304,7 +307,7 @@ class _LoginPageState extends State<LoginPage> {
               borderSide: BorderSide.none,
             ),
           ),
-          validator: validator, // Set validator
+          validator: validator,
         ),
       ],
     );
@@ -315,7 +318,7 @@ class _LoginPageState extends State<LoginPage> {
     required String hint,
     required double width,
     required TextEditingController controller,
-    required String? Function(String?)? validator, // Add validator parameter
+    required String? Function(String?)? validator,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -340,7 +343,7 @@ class _LoginPageState extends State<LoginPage> {
                   borderSide: BorderSide.none,
                 ),
               ),
-              validator: validator, // Set validator
+              validator: validator,
             ),
             TextButton(
               onPressed: () {
