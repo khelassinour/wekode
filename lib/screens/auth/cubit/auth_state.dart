@@ -46,8 +46,6 @@ class PasswordRecoveryLoading extends AuthState {}
 
 final class PasswordRecoverySuccess extends AuthState {}
 
-// final class PasswordRecoveryFailure extends AuthState {
-//   final ErrorModel errorModel;
 
 //   PasswordRecoveryFailure({required this.errorModel});
 // }
@@ -59,11 +57,6 @@ class PasswordResetLoading extends AuthState {}
 
 class PasswordResetSuccess extends AuthState {}
 
-// final class PasswordResetFailure extends AuthState {
-//   final ErrorModel errorModel;
-
-//   PasswordResetFailure({required this.errorModel});
-// }
 
 class PasswordResetBad extends AuthState {}
 //----------------------

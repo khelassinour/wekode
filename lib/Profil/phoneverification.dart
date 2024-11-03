@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobiledev/Profil/OTPverification_phone.dart';
-import '../Paasword/OTPVerificationPage.dart'; // Import the OTP Verification page
-
+import '../Paasword/OTPVerificationPage.dart';
 class phoneverification extends StatefulWidget {
   @override
   _phoneverificationState createState() => _phoneverificationState();

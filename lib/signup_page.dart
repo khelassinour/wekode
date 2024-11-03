@@ -5,9 +5,9 @@ import 'package:mobiledev/api/const.dart';
 import 'package:mobiledev/helper/cach.dart';
 import 'package:mobiledev/Orders/order_page.dart';
 import 'package:mobiledev/screens/auth/cubit/auth_cubit.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 class SignupPage extends StatefulWidget {
-  const SignupPage({super.key});
+  const SignupPage({Key? key}) : super(key: key);
 
   @override
   _SignupPageState createState() => _SignupPageState();
@@ -20,6 +20,14 @@ class _SignupPageState extends State<SignupPage> {
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+
+  Future<void> _saveUserInfo(String firstName, String lastName, String email) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('firstName', firstName);
+    await prefs.setString('lastName', lastName);
+    await prefs.setString('email', email);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,34 +70,35 @@ class _SignupPageState extends State<SignupPage> {
               ),
               SizedBox(height: screenHeight * 0.02),
 
+
               Row(
                 children: [
                   Expanded(
                     child: buildTextField(
-                        label: "First name",
-                        hint: "First name",
-                        width: screenWidth,
-                        controller: _firstNameController,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter your first name';
-                          }
-                          return null;
-                        }),
+                      label: "First name",
+                      hint: "First name",
+                      controller: _firstNameController,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your first name';
+                        }
+                        return null;
+                      },
+                    ),
                   ),
                   SizedBox(width: screenWidth * 0.02),
                   Expanded(
                     child: buildTextField(
-                        label: "Last name",
-                        hint: "Last name",
-                        width: screenWidth,
-                        controller: _lastNameController,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter your last name';
-                          }
-                          return null;
-                        }),
+                      label: "Last name",
+                      hint: "Last name",
+                      controller: _lastNameController,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your last name';
+                        }
+                        return null;
+                      },
+                    ),
                   ),
                 ],
               ),
@@ -99,15 +108,13 @@ class _SignupPageState extends State<SignupPage> {
               buildTextField(
                 label: "Email",
                 hint: "Example@gmail.com",
-                width: screenWidth,
                 controller: _emailController,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter some text';
                   }
-
                   final emailRegex =
-                      RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+                  RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
                   if (!emailRegex.hasMatch(value)) {
                     return 'Please enter a valid email';
                   }
@@ -116,26 +123,25 @@ class _SignupPageState extends State<SignupPage> {
               ),
               SizedBox(height: screenHeight * 0.02),
 
-
+              // Password Field
               buildPasswordField(
                 label: "Password",
                 hint: "Enter a password",
-                width: screenWidth,
                 controller: _passwordController,
-                validator: (p0) {
-                  if (p0 == null || p0.isEmpty) {
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
                     return 'Please enter a password';
                   }
-
                   return null;
                 },
               ),
               SizedBox(height: screenHeight * 0.05),
 
-
+              // Terms and Privacy
               buildTermsAndPrivacy(),
               SizedBox(height: screenHeight * 0.05),
 
+              // Sign Up Button with BlocConsumer
               BlocConsumer<AuthCubit, AuthState>(
                 listener: (context, state) async {
                   if (state is RegisterStateGood) {
@@ -145,13 +151,20 @@ class _SignupPageState extends State<SignupPage> {
                         backgroundColor: Colors.green,
                       ),
                     );
+                    await _saveUserInfo(
+                      _firstNameController.text,
+                      _lastNameController.text,
+                      _emailController.text,
+                    );
                     await CachHelper.putcache(
-                        key: tokenCache, value: state.model.data!.accessToken);
+                      key: tokenCache,
+                      value: state.model.data!.accessToken,
+                    );
                     Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>  HomePage()),
-                        (route) => false);
+                      context,
+                      MaterialPageRoute(builder: (context) => HomePage()),
+                          (route) => false,
+                    );
                   } else if (state is RegisterStateBad) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
@@ -163,7 +176,8 @@ class _SignupPageState extends State<SignupPage> {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text(
-                            state.errorModel.error?.description ?? "Error"),
+                          state.errorModel.error?.description ?? "Error",
+                        ),
                         backgroundColor: Colors.red,
                       ),
                     );
@@ -171,9 +185,7 @@ class _SignupPageState extends State<SignupPage> {
                 },
                 builder: (context, state) {
                   if (state is RegisterLodinState) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
+                    return const Center(child: CircularProgressIndicator());
                   }
                   return ElevatedButton(
                     onPressed: () {
@@ -185,13 +197,7 @@ class _SignupPageState extends State<SignupPage> {
                           "password": _passwordController.text,
                           'password_confirmation': _passwordController.text,
                         };
-                        print(data);
                         AuthCubit.get(context).registerUser(data: data);
-
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(builder: (context) => HomePage()),
-                        // );
                       }
                     },
                     style: ElevatedButton.styleFrom(
@@ -202,7 +208,7 @@ class _SignupPageState extends State<SignupPage> {
                       ),
                     ),
                     child: Text(
-                      "Log in",
+                      "Sign Up",
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: screenWidth * 0.045,
@@ -214,16 +220,16 @@ class _SignupPageState extends State<SignupPage> {
 
               SizedBox(height: screenHeight * 0.1),
 
-              // Shipper account prompt
+
               buildShipperPrompt(),
               SizedBox(height: screenHeight * 0.02),
 
-              // Divider with "Or sign up with" text
+
               buildDividerWithText("Or sign up with"),
               SizedBox(height: screenHeight * 0.02),
 
-              // Social media icons
-              buildSocialMediaIcons(screenWidth, screenHeight),
+
+              buildSocialMediaIcons(),
               SizedBox(height: screenHeight * 0.02),
             ],
           ),
@@ -235,7 +241,6 @@ class _SignupPageState extends State<SignupPage> {
   Widget buildTextField({
     required String label,
     required String hint,
-    required double width,
     required TextEditingController controller,
     required String? Function(String?)? validator,
   }) {
@@ -244,11 +249,10 @@ class _SignupPageState extends State<SignupPage> {
       children: [
         Text(
           label,
-          style: TextStyle(fontSize: width * 0.035, color: Colors.grey[700]),
+          style: const TextStyle(fontSize: 12, color: Colors.grey),
         ),
-        SizedBox(height: width * 0.02),
+        const SizedBox(height: 8),
         TextFormField(
-          keyboardType: TextInputType.emailAddress,
           controller: controller,
           decoration: InputDecoration(
             hintText: hint,
@@ -268,7 +272,6 @@ class _SignupPageState extends State<SignupPage> {
   Widget buildPasswordField({
     required String label,
     required String hint,
-    required double width,
     required TextEditingController controller,
     required String? Function(String?)? validator,
   }) {
@@ -277,9 +280,9 @@ class _SignupPageState extends State<SignupPage> {
       children: [
         Text(
           label,
-          style: TextStyle(fontSize: width * 0.035, color: Colors.grey[700]),
+          style: const TextStyle(fontSize: 12, color: Colors.grey),
         ),
-        SizedBox(height: width * 0.02),
+        const SizedBox(height: 8),
         Stack(
           alignment: Alignment.centerRight,
           children: [
@@ -303,24 +306,9 @@ class _SignupPageState extends State<SignupPage> {
                   _isPasswordVisible = !_isPasswordVisible;
                 });
               },
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  Positioned(
-                    bottom: 0,
-                    child: Container(
-                      width: 30,
-                      height: 1.5,
-                      color: Colors.grey,
-                    ),
-                  ),
-                  Text(
-                    _isPasswordVisible ? "Hide" : "Show",
-                    style: const TextStyle(
-                      color: Colors.grey,
-                    ),
-                  ),
-                ],
+              child: Text(
+                _isPasswordVisible ? "Hide" : "Show",
+                style: const TextStyle(color: Colors.grey),
               ),
             ),
           ],
@@ -352,15 +340,15 @@ class _SignupPageState extends State<SignupPage> {
   Widget buildShipperPrompt() {
     return Center(
       child: RichText(
-        text: TextSpan(
-          text: "Want to become a shipper? ",
-          style: TextStyle(fontSize: 12, color: Colors.grey[700]),
-          children: const [
+        text: const TextSpan(
+          text: "Already have an account? ",
+          style: TextStyle(fontSize: 12, color: Colors.black),
+          children: [
             TextSpan(
-              text: "Sign up for a professional shipper account",
+              text: "Sign In",
               style: TextStyle(
                 fontWeight: FontWeight.bold,
-                color: Colors.black,
+                color: Color(0xFF6D57FC),
               ),
             ),
           ],
@@ -375,18 +363,17 @@ class _SignupPageState extends State<SignupPage> {
         const Expanded(child: Divider(color: Colors.grey)),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
-          child: Text(text,
-              style: const TextStyle(fontSize: 13, color: Colors.grey)),
+          child: Text(text),
         ),
         const Expanded(child: Divider(color: Colors.grey)),
       ],
     );
   }
 
-  Widget buildSocialMediaIcons(double screenWidth, double screenHeight) {
-    double iconWidth = screenWidth * 0.20;
-    double iconHeight = screenHeight * 0.05;
-    double iconSpacing = screenWidth * 0.05;
+  Widget buildSocialMediaIcons() {
+    double iconWidth = MediaQuery.of(context).size.width * 0.20;
+    double iconHeight = MediaQuery.of(context).size.height * 0.05;
+    double iconSpacing = MediaQuery.of(context).size.width * 0.05;
 
     return Center(
       child: Row(

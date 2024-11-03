@@ -60,28 +60,48 @@ class _HomePageState extends State<HomePage> {
             ),
           ],
         ),
-        child: BottomNavigationBar(
+        child:BottomNavigationBar(
           backgroundColor: Colors.transparent,
           elevation: 0,
-          items: const <BottomNavigationBarItem>[
+          items: [
             BottomNavigationBarItem(
-              icon: ImageIcon(AssetImage('assets/home_icon.ico'), size: 24, color: Colors.grey),
+              icon: ImageIcon(
+                AssetImage('assets/home_icon.ico'),
+                size: 24,
+                color: _selectedIndex == 0 ? Color(0xFF6D57FC) : Colors.grey,
+              ),
               label: 'Home',
             ),
             BottomNavigationBarItem(
-              icon: ImageIcon(AssetImage('assets/home_icon.ico'), size: 24, color: Colors.grey),
+              icon: ImageIcon(
+                AssetImage('assets/home_icon.ico'),
+                size: 24,
+                color: _selectedIndex == 1 ? Color(0xFF6D57FC) : Colors.grey,
+              ),
               label: 'Orders',
             ),
             BottomNavigationBarItem(
-              icon: ImageIcon(AssetImage('assets/plane_icon.ico'), size: 24, color: Colors.grey),
+              icon: ImageIcon(
+                AssetImage('assets/plane_icon.ico'),
+                size: 24,
+                color: _selectedIndex == 2 ? Color(0xFF6D57FC) : Colors.grey,
+              ),
               label: 'Trips',
             ),
             BottomNavigationBarItem(
-              icon: ImageIcon(AssetImage('assets/inboxico.ico'), size: 24, color: Colors.grey),
+              icon: ImageIcon(
+                AssetImage('assets/inboxico.ico'),
+                size: 24,
+                color: _selectedIndex == 3 ? Color(0xFF6D57FC) : Colors.grey,
+              ),
               label: 'Inbox',
             ),
             BottomNavigationBarItem(
-              icon: ImageIcon(AssetImage('assets/person_icon.ico'), size: 24, color: Colors.grey),
+              icon: ImageIcon(
+                AssetImage('assets/person_icon.ico'),
+                size: 24,
+                color: _selectedIndex == 4 ? Color(0xFF6D57FC) : Colors.grey,
+              ),
               label: 'Profile',
             ),
           ],
@@ -103,12 +123,12 @@ class OrderPage extends StatefulWidget {
 }
 
 class _OrderPageState extends State<OrderPage> {
-  TextEditingController _dateController = TextEditingController(); // Date controller
+  TextEditingController _dateController = TextEditingController();
   String? _selectedProduct;
   TextEditingController _fromController = TextEditingController();
   TextEditingController _toController = TextEditingController();
 
-// Variable to store the selected product
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -140,7 +160,7 @@ class _OrderPageState extends State<OrderPage> {
         centerTitle: true,
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05), // Responsive padding
+        padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

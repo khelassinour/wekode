@@ -39,7 +39,7 @@ class VerificationScreen extends StatelessWidget {
           ),
         ),
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.06),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -70,80 +70,22 @@ class VerificationScreen extends StatelessWidget {
               textAlign: TextAlign.start,
             ),
             SizedBox(height: screenHeight * 0.04),
-            Container(
-              padding: EdgeInsets.all(screenWidth * 0.04),
-              decoration: BoxDecoration(
-                color: Colors.grey[200],
-                borderRadius: BorderRadius.circular(screenWidth * 0.03),
-              ),
-              child: Row(
-                children: [
-                  Icon(Icons.perm_identity, size: screenWidth * 0.08, color: Colors.black54),
-                  SizedBox(width: screenWidth * 0.04),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Take a picture of a valid ID",
-                          style: TextStyle(
-                            fontSize: screenWidth * 0.04,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                          ),
-                        ),
-                        SizedBox(height: screenHeight * 0.005),
-                        Text(
-                          "Please submit a valid driver’s licence or\nnational ID document to process your application.",
-                          style: TextStyle(
-                            fontSize: screenWidth * 0.035,
-                            color: Colors.grey[700],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+            _buildInfoCard(
+              icon: Icons.perm_identity,
+              title: "Take a picture of a valid ID",
+              description: "Please submit a valid driver’s licence or\nnational ID document to process your application.",
+              screenWidth: screenWidth,
+              screenHeight: screenHeight,
             ),
             SizedBox(height: screenHeight * 0.02),
-            Container(
-              padding: EdgeInsets.all(screenWidth * 0.04),
-              decoration: BoxDecoration(
-                color: Colors.grey[200],
-                borderRadius: BorderRadius.circular(screenWidth * 0.03),
-              ),
-              child: Row(
-                children: [
-                  Icon(Icons.camera_alt, size: screenWidth * 0.08, color: Colors.black54),
-                  SizedBox(width: screenWidth * 0.04),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Take a selfie of yourself",
-                          style: TextStyle(
-                            fontSize: screenWidth * 0.04,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                          ),
-                        ),
-                        SizedBox(height: screenHeight * 0.005),
-                        Text(
-                          "This will help us match your face with your submitted document.",
-                          style: TextStyle(
-                            fontSize: screenWidth * 0.035,
-                            color: Colors.grey[700],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+            _buildInfoCard(
+              icon: Icons.camera_alt,
+              title: "Take a selfie of yourself",
+              description: "This will help us match your face with your submitted document.",
+              screenWidth: screenWidth,
+              screenHeight: screenHeight,
             ),
-            Spacer(),
+            SizedBox(height: screenHeight * 0.02),
             Row(
               children: [
                 Icon(Icons.lock, color: Colors.grey, size: screenWidth * 0.04),
@@ -188,6 +130,45 @@ class VerificationScreen extends StatelessWidget {
     );
   }
 
+  Widget _buildInfoCard({required IconData icon, required String title, required String description, required double screenWidth, required double screenHeight}) {
+    return Container(
+      padding: EdgeInsets.all(screenWidth * 0.04),
+      decoration: BoxDecoration(
+        color: Colors.grey[200],
+        borderRadius: BorderRadius.circular(screenWidth * 0.03),
+      ),
+      child: Row(
+        children: [
+          Icon(icon, size: screenWidth * 0.08, color: Colors.black54),
+          SizedBox(width: screenWidth * 0.04),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: screenWidth * 0.04,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+                SizedBox(height: screenHeight * 0.005),
+                Text(
+                  description,
+                  style: TextStyle(
+                    fontSize: screenWidth * 0.035,
+                    color: Colors.grey[700],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   void _showPreparationSheet(BuildContext context, double screenWidth, double screenHeight) {
     showModalBottomSheet(
       backgroundColor: Colors.white,
@@ -196,81 +177,80 @@ class VerificationScreen extends StatelessWidget {
         borderRadius: BorderRadius.vertical(top: Radius.circular(screenWidth * 0.05)),
       ),
       builder: (context) {
-
-        return Padding(
-
-          padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SizedBox(height: screenHeight * 0.04),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  SizedBox(width: screenWidth * 0.01),
-                  Text(
-                    "Prepare for the picture",
-                    style: TextStyle(
-                      fontSize: screenWidth * 0.05,
-                      fontWeight: FontWeight.bold,
+        return SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(height: screenHeight * 0.04),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    SizedBox(width: screenWidth * 0.01),
+                    Text(
+                      "Prepare for the picture",
+                      style: TextStyle(
+                        fontSize: screenWidth * 0.05,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.close),
-                    onPressed: () => Navigator.of(context).pop(),
-                  ),
-                ],
-              ),
-              SizedBox(height: screenHeight * 0.02),
-              _buildPreparationStep(
-                "1  Start with good lighting",
-                "Take the photo in a well-lit space. Flash light may cause a glare on your ID.",
-                screenWidth,
-              ),
-              SizedBox(height: screenHeight * 0.03),
-              _buildPreparationStep(
-                "2  Find a flat surface",
-                "Place your ID on a flat, solid-colored surface that contrasts with your passport.",
-                screenWidth,
-              ),
-              SizedBox(height: screenHeight * 0.03),
-              _buildPreparationStep(
-                "3  The photo will be taken automatically",
-                "Once your document ID is in the frame, take a photo.",
-                screenWidth,
-              ),
-              SizedBox(height: screenHeight * 0.04),
-              Center(
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => TakeIDPage()),
-                    );
-
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF6D57FC),
-                    padding: EdgeInsets.symmetric(
-                      vertical: screenHeight * 0.02,
-                      horizontal: screenWidth * 0.3,
+                    IconButton(
+                      icon: Icon(Icons.close),
+                      onPressed: () => Navigator.of(context).pop(),
                     ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(screenWidth * 0.03),
+                  ],
+                ),
+                SizedBox(height: screenHeight * 0.02),
+                _buildPreparationStep(
+                  "1  Start with good lighting",
+                  "Take the photo in a well-lit space. Flash light may cause a glare on your ID.",
+                  screenWidth,
+                ),
+                SizedBox(height: screenHeight * 0.03),
+                _buildPreparationStep(
+                  "2  Find a flat surface",
+                  "Place your ID on a flat, solid-colored surface that contrasts with your passport.",
+                  screenWidth,
+                ),
+                SizedBox(height: screenHeight * 0.03),
+                _buildPreparationStep(
+                  "3  The photo will be taken automatically",
+                  "Once your document ID is in the frame, take a photo.",
+                  screenWidth,
+                ),
+                SizedBox(height: screenHeight * 0.04),
+                Center(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => TakeIDPage()),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color(0xFF6D57FC),
+                      padding: EdgeInsets.symmetric(
+                        vertical: screenHeight * 0.02,
+                        horizontal: screenWidth * 0.3,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(screenWidth * 0.03),
+                      ),
                     ),
-                  ),
-                  child: Text(
-                    "Got it",
-                    style: TextStyle(
-                      fontSize: screenWidth * 0.04,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                    child: Text(
+                      "Got it",
+                      style: TextStyle(
+                        fontSize: screenWidth * 0.04,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              SizedBox(height: screenHeight * 0.04),
-            ],
+                SizedBox(height: screenHeight * 0.04),
+              ],
+            ),
           ),
         );
       },

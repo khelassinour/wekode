@@ -37,6 +37,7 @@ dependencies:
   flutter_bloc: ^8.1.6
   bloc: ^8.1.4
   toggle_switch: ^2.0.0
+  camera: ^0.10.0
 
 dev_dependencies:
   flutter_test:

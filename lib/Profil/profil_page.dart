@@ -6,6 +6,8 @@ import '../api/const.dart';
 import '../helper/cach.dart';
 import '../screens/auth/login_page.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -16,10 +18,34 @@ class _ProfilePageState extends State<ProfilePage> {
   final ImagePicker _picker = ImagePicker();
   XFile? _profileImage;
 
+  String? _firstName;
+  String? _lastName;
+  String? _email;
+
+
   static const String firstName = 'Nour';
   static const String lastName = 'K';
   static const String email = 'nour@gmail.com';
   static const String phone = '+312-549727920';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserInfo();
+  }
+
+  Future<void> _loadUserInfo() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _firstName = prefs.getString('firstName');
+      _lastName = prefs.getString('lastName');
+      _email = prefs.getString('email');
+    });
+  }
+
+
+
+
 
   Future<void> _pickImage() async {
     final XFile? pickedFile = await _picker.pickImage(source: ImageSource.gallery);
@@ -36,122 +62,59 @@ class _ProfilePageState extends State<ProfilePage> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: Text('Profile'),
+        title: const Text('Profile', style: TextStyle(color: Colors.black)),
         centerTitle: true,
-        automaticallyImplyLeading: false,
+        elevation: 1,
       ),
       body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.all(paddingSize),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: Stack(
-                  children: [
-                    CircleAvatar(
-
-                      radius: 50,
-                      backgroundImage: _profileImage != null
-                          ? FileImage(File(_profileImage!.path))
-                          : AssetImage('assets/person.png') as ImageProvider,
-                    ),
-                    Positioned(
-                      bottom: 0,
-                      right: 0,
-                      child: GestureDetector(
-                        onTap: _pickImage,
-                        child: CircleAvatar(
-                          radius: 15,
-                          backgroundColor: Colors.white,
-                          child: Icon(
-                            Icons.edit,
-                            color: Colors.grey,
-                            size: 18,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: paddingSize),
-              _buildProfileField(context, 'First Name', firstName),
-              _buildProfileField(context, 'Last Name', lastName),
-              _buildProfileField(context, 'Email', email),
-              _buildProfileField(context, 'Phone', phone),
-              Text(
-                'Password',
-                style: TextStyle(
-                  color: Colors.grey[600],
-                  fontSize: MediaQuery.of(context).size.width * 0.038,
-                ),
-              ),
-              SizedBox(height: 10),
-              ElevatedButton(
-                onPressed: () {
-
-                },
-                child: Text('Change Password'),
-                style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.white,
-                  backgroundColor: Color(0xFF6D57FC),
-                  minimumSize: Size(double.infinity, 50),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-              ),
-              SizedBox(height: paddingSize),
-              Text(
-                'Profile Verification',
-                style: TextStyle(
-                  color: Colors.grey[600],
-                  fontSize: MediaQuery.of(context).size.width * 0.038,
-                ),
-              ),
-              SizedBox(height: 10),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildClickableTextField('Identity verification', () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => VerificationScreen()),
-                    );
-                  }),
-                  SizedBox(height: 20),
-                  _buildClickableTextField('Phone number verification', () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => phoneverification()),
-                    );
-
-                  }),
-                ],
-              ),
-              SizedBox(height: paddingSize),
-              ElevatedButton(
-                onPressed: () {
-                  CachHelper.removdata(key: tokenCache);
-                  Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(builder: (context) => const LoginPage()),
-                          (route) => false);
-                },
-                child: Text('Logout'),
-                style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.white,
-                  backgroundColor: Color(0xFF6D57FC),
-                  minimumSize: Size(double.infinity, 50),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-              ),
-            ],
-          ),
+        padding: EdgeInsets.all(paddingSize),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildProfileImage(),
+            SizedBox(height: paddingSize),
+            _buildProfileField(context, 'First Name', _firstName ?? 'N/A'),
+            _buildProfileField(context, 'Last Name', _lastName ?? 'N/A'),
+            _buildProfileField(context, 'Email', _email ?? 'N/A'),
+            _buildProfileField(context, 'Phone', phone),
+            _buildChangePasswordButton(context),
+            SizedBox(height: paddingSize),
+            _buildProfileVerificationSection(context),
+            SizedBox(height: paddingSize),
+            _buildLogoutButton(context),
+          ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildProfileImage() {
+    return Center(
+      child: Stack(
+        children: [
+          CircleAvatar(
+            radius: 50,
+            backgroundImage: _profileImage != null
+                ? FileImage(File(_profileImage!.path))
+                : const AssetImage('assets/person.png') as ImageProvider,
+          ),
+          Positioned(
+            bottom: 0,
+            right: 0,
+            child: GestureDetector(
+              onTap: _pickImage,
+              child: CircleAvatar(
+                radius: 15,
+                backgroundColor: Colors.white,
+                child: const Icon(
+                  Icons.edit,
+                  color: Colors.grey,
+                  size: 18,
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -167,24 +130,81 @@ class _ProfilePageState extends State<ProfilePage> {
             fontSize: MediaQuery.of(context).size.width * 0.038,
           ),
         ),
-        SizedBox(height: 10),
+        const SizedBox(height: 10),
         TextField(
           controller: TextEditingController(text: value),
           enabled: false,
           decoration: InputDecoration(
-            hintText: '',
-            hintStyle: TextStyle(color: Colors.grey, fontSize: 15),
             filled: true,
             fillColor: Colors.grey[200],
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
               borderSide: BorderSide.none,
             ),
-            contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+            contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
           ),
-          style: TextStyle(color: Colors.black),
+          style: const TextStyle(color: Colors.black),
         ),
-        SizedBox(height: MediaQuery.of(context).size.width * 0.05),
+        const SizedBox(height: 20),
+      ],
+    );
+  }
+
+  Widget _buildChangePasswordButton(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Password',
+          style: TextStyle(
+            color: Colors.grey[600],
+            fontSize: MediaQuery.of(context).size.width * 0.038,
+          ),
+        ),
+        const SizedBox(height: 10),
+        ElevatedButton(
+          onPressed: () {
+
+          },
+          child: const Text('Change Password'),
+          style: ElevatedButton.styleFrom(
+            foregroundColor: Colors.white,
+            backgroundColor: const Color(0xFF6D57FC),
+            minimumSize: const Size(double.infinity, 50),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildProfileVerificationSection(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Profile Verification',
+          style: TextStyle(
+            color: Colors.grey[600],
+            fontSize: MediaQuery.of(context).size.width * 0.038,
+          ),
+        ),
+        const SizedBox(height: 10),
+        _buildClickableTextField('Identity Verification', () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => VerificationScreen()),
+          );
+        }),
+        const SizedBox(height: 20),
+        _buildClickableTextField('Phone Number Verification', () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => phoneverification()),
+          );
+        }),
       ],
     );
   }
@@ -193,7 +213,7 @@ class _ProfilePageState extends State<ProfilePage> {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 10.0),
+        padding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 10.0),
         decoration: BoxDecoration(
           color: Colors.grey[200],
           borderRadius: BorderRadius.circular(8),
@@ -203,14 +223,36 @@ class _ProfilePageState extends State<ProfilePage> {
           children: [
             Text(
               title,
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
-            Icon(
+            const Icon(
               Icons.arrow_forward_ios,
               size: 16,
               color: Colors.grey,
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLogoutButton(BuildContext context) {
+    return ElevatedButton(
+      onPressed: () {
+        CachHelper.removdata(key: tokenCache);
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => const LoginPage()),
+              (route) => false,
+        );
+      },
+      child: const Text('Logout'),
+      style: ElevatedButton.styleFrom(
+        foregroundColor: Colors.white,
+        backgroundColor: const Color(0xFF6D57FC),
+        minimumSize: const Size(double.infinity, 50),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
         ),
       ),
     );

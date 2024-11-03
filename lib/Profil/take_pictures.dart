@@ -1,7 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'package:mobiledev/Orders/order_page.dart';
+import 'package:camera/camera.dart';
 import 'package:mobiledev/Profil/identityverification_page.dart';
 import 'package:mobiledev/Profil/profil_page.dart';
+
+import '../Orders/order_page.dart';
 
 void main() {
   runApp(MyApp());
@@ -16,14 +20,62 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class TakeIDPage extends StatelessWidget {
+class TakeIDPage extends StatefulWidget {
+  @override
+  _TakeIDPageState createState() => _TakeIDPageState();
+}
+
+class _TakeIDPageState extends State<TakeIDPage> {
+  CameraController? _cameraController;
+  late Future<void> _initializeControllerFuture;
+  String? imagePath;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeCamera();
+  }
+
+  Future<void> _initializeCamera() async {
+    final cameras = await availableCameras();
+    final camera = cameras.first;
+
+    _cameraController = CameraController(camera, ResolutionPreset.high);
+    _initializeControllerFuture = _cameraController!.initialize();
+  }
+
+  @override
+  void dispose() {
+    _cameraController?.dispose();
+    super.dispose();
+  }
+
+  Future<void> _takePicture() async {
+    try {
+      await _initializeControllerFuture;
+      final image = await _cameraController!.takePicture();
+
+      setState(() {
+        imagePath = image.path;
+      });
+
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => IdSubmittedPage(imagePath: image.path),
+        ),
+      );
+    } catch (e) {
+      print(e);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      backgroundColor: Colors.grey, // Light grey background
+      backgroundColor: Colors.grey,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -43,11 +95,20 @@ class TakeIDPage extends StatelessWidget {
               decoration: BoxDecoration(
                 color: Colors.grey[350],
                 borderRadius: BorderRadius.circular(screenWidth * 0.03),
-                border: Border.all(
-                  color: Colors.white,
-                  width: 1.0,
-                ),
+                border: Border.all(color: Colors.white, width: 1.0),
               ),
+              child: _cameraController != null
+                  ? FutureBuilder<void>(
+                future: _initializeControllerFuture,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    return CameraPreview(_cameraController!);
+                  } else {
+                    return Center(child: CircularProgressIndicator());
+                  }
+                },
+              )
+                  : Center(child: CircularProgressIndicator()),
             ),
           ),
           SizedBox(height: screenHeight * 0.02),
@@ -72,11 +133,7 @@ class TakeIDPage extends StatelessWidget {
           Padding(
             padding: EdgeInsets.only(bottom: screenHeight * 0.06),
             child: GestureDetector(
-              onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => IdSubmittedPage(),
-                ));
-              },
+              onTap: _takePicture,
               child: Container(
                 width: screenWidth * 0.25,
                 height: screenWidth * 0.25,
@@ -111,6 +168,10 @@ class TakeIDPage extends StatelessWidget {
 }
 
 class IdSubmittedPage extends StatelessWidget {
+  final String? imagePath;
+
+  IdSubmittedPage({this.imagePath});
+
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
@@ -139,15 +200,28 @@ class IdSubmittedPage extends StatelessWidget {
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(screenWidth * 0.03),
               ),
-              child: Center(
-                child: Icon(Icons.insert_photo, size: screenWidth * 0.2, color: Colors.black54),
+              child: imagePath != null
+                  ? Image.file(
+                File(imagePath!),
+                fit: BoxFit.cover,
+              )
+                  : Center(
+                child: Icon(
+                  Icons.insert_photo,
+                  size: screenWidth * 0.2,
+                  color: Colors.black54,
+                ),
               ),
             ),
           ),
           SizedBox(height: screenHeight * 0.04),
           Text(
             "Is the photo of your ID clear?",
-            style: TextStyle(fontSize: screenWidth * 0.05, fontWeight: FontWeight.bold, color: Colors.white),
+            style: TextStyle(
+              fontSize: screenWidth * 0.05,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
             textAlign: TextAlign.center,
           ),
           SizedBox(height: screenHeight * 0.01),
@@ -174,7 +248,10 @@ class IdSubmittedPage extends StatelessWidget {
               padding: EdgeInsets.symmetric(vertical: screenHeight * 0.02, horizontal: screenWidth * 0.09),
               child: Text(
                 "Submit the photo",
-                style: TextStyle(fontSize: screenWidth * 0.04, fontWeight: FontWeight.bold, color: Colors.white),
+                style: TextStyle(
+                    fontSize: screenWidth * 0.04,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white),
               ),
             ),
           ),
@@ -193,6 +270,7 @@ class IdSubmittedPage extends StatelessWidget {
     );
   }
 }
+
 
 class IdentityVerificationPage extends StatelessWidget {
   @override
@@ -238,8 +316,8 @@ class IdentityVerificationPage extends StatelessWidget {
               fontSize: screenWidth * 0.035,
             ),
           ),
-          Spacer(),
-          Padding(
+          SizedBox(height: screenHeight * 0.01)
+          ,Padding(
             padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05, vertical: screenHeight * 0.03),
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
@@ -266,7 +344,56 @@ class IdentityVerificationPage extends StatelessWidget {
   }
 }
 
-class SelfiePage extends StatelessWidget {
+class SelfiePage extends StatefulWidget {
+  @override
+  _SelfiePageState createState() => _SelfiePageState();
+}
+
+class _SelfiePageState extends State<SelfiePage> {
+  CameraController? _cameraController;
+  late Future<void> _initializeControllerFuture;
+  String? imagePath;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeCamera();
+  }
+
+  Future<void> _initializeCamera() async {
+    final cameras = await availableCameras();
+
+    final frontCamera = cameras.firstWhere((camera) => camera.lensDirection == CameraLensDirection.front);
+
+    _cameraController = CameraController(frontCamera, ResolutionPreset.high);
+    _initializeControllerFuture = _cameraController!.initialize();
+  }
+
+  @override
+  void dispose() {
+    _cameraController?.dispose();
+    super.dispose();
+  }
+
+  Future<void> _takeSelfie() async {
+    try {
+      await _initializeControllerFuture;
+      final image = await _cameraController!.takePicture();
+
+      setState(() {
+        imagePath = image.path;
+      });
+
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => SelfieSubmittedPage(imagePath: image.path),
+        ),
+      );
+    } catch (e) {
+      print(e);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
@@ -279,16 +406,13 @@ class SelfiePage extends StatelessWidget {
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
+          onPressed: () => Navigator.of(context).pop(),
         ),
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           SizedBox(height: screenHeight * 0.03),
-
           Center(
             child: Container(
               width: screenWidth * 0.8,
@@ -297,6 +421,18 @@ class SelfiePage extends StatelessWidget {
                 borderRadius: BorderRadius.circular(screenWidth * 0.9),
                 border: Border.all(color: Colors.white, width: 1),
               ),
+              child: _cameraController != null
+                  ? FutureBuilder<void>(
+                future: _initializeControllerFuture,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    return CameraPreview(_cameraController!);
+                  } else {
+                    return Center(child: CircularProgressIndicator());
+                  }
+                },
+              )
+                  : Center(child: CircularProgressIndicator()),
             ),
           ),
           SizedBox(height: screenHeight * 0.03),
@@ -309,11 +445,7 @@ class SelfiePage extends StatelessWidget {
           ),
           SizedBox(height: screenHeight * 0.2),
           GestureDetector(
-            onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => Selfiesubbmitted(),
-              ));
-            },
+            onTap: _takeSelfie,
             child: Container(
               width: screenWidth * 0.25,
               height: screenWidth * 0.25,
@@ -345,7 +477,12 @@ class SelfiePage extends StatelessWidget {
     );
   }
 }
-class Selfiesubbmitted extends StatelessWidget {
+
+class SelfieSubmittedPage extends StatelessWidget {
+  final String? imagePath;
+
+  SelfieSubmittedPage({this.imagePath});
+
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
@@ -366,8 +503,6 @@ class Selfiesubbmitted extends StatelessWidget {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          SizedBox(height: screenHeight * 0.03),
-
           Center(
             child: Container(
               width: screenWidth * 0.8,
@@ -376,11 +511,23 @@ class Selfiesubbmitted extends StatelessWidget {
                 borderRadius: BorderRadius.circular(screenWidth * 0.9),
                 border: Border.all(color: Colors.white, width: 1),
               ),
+              child: imagePath != null
+                  ? Image.file(
+                File(imagePath!),
+                fit: BoxFit.cover,
+              )
+                  : Center(
+                child: Icon(
+                  Icons.insert_photo,
+                  size: screenWidth * 0.2,
+                  color: Colors.black54,
+                ),
+              ),
             ),
           ),
           SizedBox(height: screenHeight * 0.03),
           Text(
-            ' Is your photo clear ?',
+            'Is your photo clear?',
             style: TextStyle(
               color: Colors.white,
               fontSize: screenWidth * 0.04,
@@ -389,9 +536,7 @@ class Selfiesubbmitted extends StatelessWidget {
           SizedBox(height: screenHeight * 0.09),
           ElevatedButton(
             onPressed: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => ReviewPage(),
-              ));
+              Navigator.of(context).pop();
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Color(0xFF6D57FC),
@@ -488,7 +633,7 @@ class ReviewPage extends StatelessWidget {
                   "We’ll send you a notification once it’s over.\n\n"
                   "In the meantime, you can pick-up where you left off.",
               style: TextStyle(
-                fontSize: screenWidth * 0.035, // Responsive font size
+                fontSize: screenWidth * 0.035,
                 color: Colors.black54,
               ),
               textAlign: TextAlign.start,
@@ -519,7 +664,8 @@ class ReviewPage extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(height: screenHeight * 0.02),
+            Spacer(),
+
           ],
         ),
       ),

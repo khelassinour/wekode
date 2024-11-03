@@ -5,7 +5,7 @@ import 'package:mobiledev/screens/auth/login_page.dart';
 class Successverification extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // Get screen dimensions
+
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
 
